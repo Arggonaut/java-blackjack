@@ -32,6 +32,10 @@ public class Card {
     public Suit getSuit() {
         return suit;
     }
+    
+    public int getValue() {
+        return rank.getValue();
+    }
 
     @Override
     public String toString() {
