@@ -13,20 +13,27 @@ import java.util.LinkedList;
  */
 public class Deck {
     private LinkedList<Card> listOfCards = new LinkedList<Card>();
+    private LinkedList<Card> drawnCards = new LinkedList<Card>();
     
     public Deck(){
         resetDeck();
-        shuffleDeck();
-        
     }
     
     public void resetDeck(){
-        listOfCards.clear();
-        for (Suit suit: Suit.values()){
-            for (Rank rank: Rank.values()){
-                listOfCards.add(new Card(rank, suit));
+        if (drawnCards.size() == 0){
+            for (Suit suit: Suit.values()){
+                for (Rank rank: Rank.values()){
+                    listOfCards.add(new Card(rank, suit));
+                }
             }
         }
+        else{
+            for (Card card: drawnCards){
+                listOfCards.add(card);
+            }
+            drawnCards.clear();
+        }
+        shuffleDeck();
     }
     
     public void shuffleDeck(){
@@ -38,7 +45,8 @@ public class Deck {
             throw new IllegalStateException("The deck is empty!");
         }
         else{
-            return (listOfCards.remove());
+            drawnCards.addFirst(listOfCards.remove());
+            return (drawnCards.getFirst());
         }
     }
     
