@@ -5,6 +5,8 @@
 package javablackjack;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -18,10 +20,13 @@ public class BlackjackFrame extends JFrame {
     private JPanel buttonPanel;
     private JButton hitButton;
     private JButton standButton;
+    private BlackjackActions actions;
+    private Player user;
     
-    
-    public BlackjackFrame(Player dealer, Player user) {
-        super("Blackjack");
+    public BlackjackFrame(Player dealer, Player user, BlackjackActions actions) {
+        super("JavaBlackjack");
+        this.actions = actions;
+        this.user = user;
         setLayout(new GridLayout(3,1)); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(720,480);
@@ -32,10 +37,28 @@ public class BlackjackFrame extends JFrame {
         //bottom slot - the buttons for hit and stand
         buttonPanel = new JPanel();
         hitButton = new JButton("HIT");
+        HitHandler hitHandler = new HitHandler();
+        hitButton.addActionListener(hitHandler);
         standButton = new JButton("STAND");
         buttonPanel.add(hitButton);
         buttonPanel.add(standButton);
         add(buttonPanel);
+        
+    }
+    private class HitHandler implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent event){
+            actions.hit(user);
+            user.revalidate();
+            user.repaint();
+        }
+    }
+    
+    private class StandHandler implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent event){
+            System.out.print("hello");
+        }
     }
     
     public void resetFrame() {
