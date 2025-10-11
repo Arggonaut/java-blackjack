@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 public class Player extends JPanel{
     private LinkedList<Card> playerCards = new LinkedList<Card>();
     private int score;
-    private PlayerState state;
     
     public Player() {
         
@@ -25,17 +24,15 @@ public class Player extends JPanel{
         this.score = score;
     }
     
-    public void setState(PlayerState state) {
-        this.state = state;
-    }
-
     public int getScore() {
         return score;
     }
     
-    public PlayerState getState() {
-        return state;
+    
+    public String getCards() {
+        return playerCards.toString();
     }
+    
     public void addCard(Card card) {
         playerCards.add(card);
         add(new JLabel(card.getIcon()));
@@ -49,6 +46,22 @@ public class Player extends JPanel{
         while (playerCards.isEmpty() == false){
             deck.addCard(playerCards.remove());
         }
+    }
+    
+    public void bust() {
+        JLabel bustLabel = new JLabel("BUST!");
+        add(bustLabel);
+    }
+    
+    public void blackjack() {
+        JLabel blackjackLabel = new JLabel("BLACKJACK!");
+        add(blackjackLabel);
+    }
+    
+    public void loseScreen() {
+        removeAll();
+        JLabel loseLabel = new JLabel("YOU LOSE!");
+        add(loseLabel);
     }
     
 }

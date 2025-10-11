@@ -10,21 +10,24 @@ package javablackjack;
  */
 public class JavaBlackjack {
 
-    private Player user = new Player();
+    private static Player user = new Player();
     private Player dealer = new Player();
     private Deck deck = new Deck();
     private BlackjackFrame frame;
     private BlackjackActions actions;
     
     public JavaBlackjack() {
-        frame = new BlackjackFrame(dealer, user);
-        actions = new BlackjackActions(dealer, user, deck);
         
+        actions = new BlackjackActions(dealer, user, deck);
+        frame = new BlackjackFrame(dealer, user, actions);
         frame.setVisible(true);
+        actions.drawFirstCards();
     }
     
     public static void main(String[] args) {
         JavaBlackjack game = new JavaBlackjack();
+        
+        
     }
     
 }

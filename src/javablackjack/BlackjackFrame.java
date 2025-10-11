@@ -22,11 +22,13 @@ public class BlackjackFrame extends JFrame {
     private JButton standButton;
     private BlackjackActions actions;
     private Player user;
+    private Player dealer;
     
     public BlackjackFrame(Player dealer, Player user, BlackjackActions actions) {
         super("JavaBlackjack");
         this.actions = actions;
         this.user = user;
+        this.dealer = dealer;
         setLayout(new GridLayout(3,1)); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(720,480);
@@ -40,31 +42,28 @@ public class BlackjackFrame extends JFrame {
         HitHandler hitHandler = new HitHandler();
         hitButton.addActionListener(hitHandler);
         standButton = new JButton("STAND");
+        StandHandler standHandler = new StandHandler();
+        standButton.addActionListener(standHandler);
         buttonPanel.add(hitButton);
         buttonPanel.add(standButton);
         add(buttonPanel);
         
     }
     private class HitHandler implements ActionListener{
+        //calls hit from BlackjackActions whenever the hit button is pressed
         @Override
         public void actionPerformed(ActionEvent event){
             actions.hit(user);
-            user.revalidate();
-            user.repaint();
         }
     }
     
     private class StandHandler implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
-            System.out.print("hello");
+            System.out.println(dealer.getCards());
         }
     }
     
     public void resetFrame() {
-        
-        
-        
-        
     }
 }
