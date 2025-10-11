@@ -5,15 +5,21 @@
 package javablackjack;
 
 import java.util.LinkedList;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
  * @author user
  */
-public class Player {
+public class Player extends JPanel{
     private LinkedList<Card> playerCards = new LinkedList<Card>();
     private int score;
     private PlayerState state;
+    
+    public Player() {
+        
+    }
     
     public void setScore(int score) {
         this.score = score;
@@ -32,6 +38,7 @@ public class Player {
     }
     public void addCard(Card card) {
         playerCards.add(card);
+        add(new JLabel(card.getIcon()));
     }
     
     public void addScore(int score) {

@@ -10,12 +10,22 @@ package javablackjack;
  */
 public class JavaBlackjack {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        BlackjackFrame frame = new BlackjackFrame();
+    private Player user = new Player();
+    private Player dealer = new Player();
+    private Deck deck = new Deck();
+    private BlackjackFrame frame;
+    
+    public JavaBlackjack() {
+        frame = new BlackjackFrame(dealer, user);
+        dealer.addCard(deck.drawCard());
+        dealer.addCard(deck.drawCard());
+        dealer.addCard(deck.drawCard());
+        
         frame.setVisible(true);
+    }
+    
+    public static void main(String[] args) {
+        JavaBlackjack game = new JavaBlackjack();
     }
     
 }

@@ -5,10 +5,8 @@
 package javablackjack;
 
 import java.awt.GridLayout;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -17,21 +15,27 @@ import javax.swing.JPanel;
  */
 public class BlackjackFrame extends JFrame {
     //This class handles all of the java swing for the app
-    private final JPanel dealerPanel;
-    private final JPanel playerPanel;
+    private JPanel buttonPanel;
+    private JButton hitButton;
+    private JButton standButton;
     
-    public BlackjackFrame() {
+    
+    public BlackjackFrame(Player dealer, Player user) {
         super("Blackjack");
         setLayout(new GridLayout(3,1)); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500,500);
+        setSize(900,900);
         
-        //Top Panel - where the dealer's cards go
-        dealerPanel = new JPanel();
+        add(dealer);
+        add(user);
         
-        //Middle Panele - where the player's cards go
-        playerPanel = new JPanel();
-        
+        //bottom slot - the buttons for hit and stand
+        buttonPanel = new JPanel();
+        hitButton = new JButton("HIT");
+        standButton = new JButton("STAND");
+        buttonPanel.add(hitButton);
+        buttonPanel.add(standButton);
+        add(buttonPanel);
     }
     
     public void resetFrame() {
