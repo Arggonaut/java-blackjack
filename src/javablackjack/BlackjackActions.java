@@ -12,8 +12,23 @@ import java.util.LinkedList;
  */
 public class BlackjackActions {
     //This class handles the actions of the blackjack game
+    private Player dealer;
+    private Player user;
+    private Deck deck;
+    
+    public BlackjackActions(Player dealer, Player user, Deck deck){
+        this.dealer = dealer;
+        this.user = user;
+        this.deck = deck;
+        
+        //draw the initial two cards for the player and the dealer
+        hit(dealer);
+        hit(dealer);
+        hit(user);
+        hit(user);
+    }
 
-    public static void resetGame(Player user, Player dealer, Deck deck){
+    public void resetGame(){
         //empty both player and dealer cards back into the deck, shuffles the deck, and resets scores and player states
         user.returnCards(deck);
         dealer.returnCards(deck);
@@ -25,7 +40,7 @@ public class BlackjackActions {
         
     }
     
-    public void hit(Player player, Deck deck){
+    public void hit(Player player){
         //draw a card and add its value to the score. If the score is over 21, the player state is bust. If the score is 21, the player state is blackjack.
         Card drawnCard = deck.drawCard();
         player.addCard(drawnCard);

@@ -14,12 +14,11 @@ public class JavaBlackjack {
     private Player dealer = new Player();
     private Deck deck = new Deck();
     private BlackjackFrame frame;
+    private BlackjackActions actions;
     
     public JavaBlackjack() {
         frame = new BlackjackFrame(dealer, user);
-        dealer.addCard(deck.drawCard());
-        dealer.addCard(deck.drawCard());
-        dealer.addCard(deck.drawCard());
+        actions = new BlackjackActions(dealer, user, deck);
         
         frame.setVisible(true);
     }

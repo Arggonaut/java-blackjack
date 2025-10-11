@@ -24,7 +24,7 @@ public class BlackjackFrame extends JFrame {
         super("Blackjack");
         setLayout(new GridLayout(3,1)); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(900,900);
+        setSize(720,480);
         
         add(dealer);
         add(user);
