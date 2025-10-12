@@ -20,14 +20,12 @@ public class JavaBlackjack {
         
         actions = new BlackjackActions(dealer, user, deck);
         frame = new BlackjackFrame(dealer, user, actions);
+        actions.addFrame(frame);
         frame.setVisible(true);
         actions.drawFirstCards();
     }
     
     public static void main(String[] args) {
         JavaBlackjack game = new JavaBlackjack();
-        
-        
-    }
-    
+    } 
 }
