@@ -16,10 +16,11 @@ import javax.swing.JPanel;
  * @author user
  */
 public class BlackjackFrame extends JFrame {
-    //This class handles all of the java swing for the app
+    //This class handles most of the java swing for the app
     private JPanel buttonPanel;
     private JButton hitButton;
     private JButton standButton;
+    private JButton newGameButton;
     private BlackjackActions actions;
     private Player user;
     private Player dealer;
@@ -38,6 +39,17 @@ public class BlackjackFrame extends JFrame {
         
         //bottom slot - the buttons for hit and stand
         buttonPanel = new JPanel();
+        hitStandButtonPanel();
+        add(buttonPanel);
+        
+    }
+    
+    public void clearButtonPanel() {
+        buttonPanel.removeAll();
+    }
+    
+    public void hitStandButtonPanel() {
+        clearButtonPanel();
         hitButton = new JButton("HIT");
         HitHandler hitHandler = new HitHandler();
         hitButton.addActionListener(hitHandler);
@@ -46,14 +58,25 @@ public class BlackjackFrame extends JFrame {
         standButton.addActionListener(standHandler);
         buttonPanel.add(hitButton);
         buttonPanel.add(standButton);
-        add(buttonPanel);
-        
+        buttonPanel.repaint();
+        buttonPanel.revalidate();
     }
+    
+    public void newGameButtonPanel() {
+        clearButtonPanel();
+        newGameButton = new JButton("New Game");
+        NewGameHandler newGameHandler = new NewGameHandler();
+        newGameButton.addActionListener(newGameHandler);
+        buttonPanel.add(newGameButton);
+        buttonPanel.repaint();
+        buttonPanel.revalidate();
+    }
+    
     private class HitHandler implements ActionListener{
         //calls hit from BlackjackActions whenever the hit button is pressed
         @Override
         public void actionPerformed(ActionEvent event){
-            actions.hit(user);
+            actions.userHit();
         }
     }
     
@@ -64,6 +87,14 @@ public class BlackjackFrame extends JFrame {
         }
     }
     
-    public void resetFrame() {
+    private class NewGameHandler implements ActionListener{
+        //calls resetGame from BlackjackActions and switches the buttonPanel back to hit and stand
+        @Override
+        public void actionPerformed(ActionEvent event){
+            actions.resetGame();
+            hitStandButtonPanel();
+            actions.drawFirstCards();
+        }
     }
+    
 }
