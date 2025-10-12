@@ -24,11 +24,13 @@ public class BlackjackActions {
     private final int NUMBER_OF_STARTING_CARDS = 4;
     
     public BlackjackActions(Player dealer, Player user, Deck deck){
+        // initializes variables
         this.dealer = dealer;
         this.user = user;
         this.deck = deck;
     }
     public void addFrame(BlackjackFrame frame) {
+        // initializes the frame variable
         this.frame = frame;
     }
     public void drawFirstCards(){
@@ -68,7 +70,7 @@ public class BlackjackActions {
         //the hit method with code specific to if it is the user hitting
         hit(user);
         if (user.getScore() > BLACKJACK) { //If the user busts
-            dealer.loseScreen();
+            dealer.statusScreen("LOSE");
             frame.newGameButtonPanel();
         }
         else if (user.getScore() == BLACKJACK) { //If the user gets a blackjack
@@ -77,37 +79,32 @@ public class BlackjackActions {
         }
     }
     
-    public void dealersTurn() { //After the user stands or gets a blackjack, the dealer starts drawing cards
-       //draw cards until either the dealer busts or the dealer gets a score that is greater than or equal to the user
-       Timer timer = new Timer(DRAW_DELAY, null);
-       timer.start();
-       timer.addActionListener(lambdaListener -> {
+    public void dealersTurn() { // After the user stands or gets a blackjack, the dealer starts drawing cards
+        // draw cards until either the dealer busts or the dealer gets a score that is greater than or equal to the user
+        Timer timer = new Timer(DRAW_DELAY, null);
+        timer.start();
+        timer.addActionListener(lambdaListener -> {
             if (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
                 hit(dealer);
             } 
-            else {
+            // if the dealer wins
+            else if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
+                user.statusScreen("LOSE");
+                frame.newGameButtonPanel();
+                ((Timer) lambdaListener.getSource()).stop();
+            }
+            // if the user wins
+            else { 
+                user.statusScreen("WIN");
+                frame.newGameButtonPanel();
                 ((Timer) lambdaListener.getSource()).stop();
             }
         });
- 
-       if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
-           pause(DRAW_DELAY);
-           user.loseScreen();
-       }
     }
     
-    public static void pause(int time) {
-        //makes java pause for a certain amount of time in ms
-        try {
-            Thread.sleep(time);
-        }
-        catch (InterruptedException e) {
-            
-        }
-    
-    }
     
     private class drawFirstListener implements ActionListener {
+        // alternates between giving a card to the user and then the dealer until 4 cards are dealt
         int count = 0;
         @Override
         public void actionPerformed(ActionEvent event){
