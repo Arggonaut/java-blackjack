@@ -17,10 +17,8 @@ import javax.swing.SwingConstants;
 public class Player extends JPanel{
     private LinkedList<Card> playerCards = new LinkedList<Card>();
     private int score;
-    
-    public Player() {
-        
-    }
+    private int aceCount = 0;
+    private int aceFlips = 0;
     
     public void setScore(int score) {
         this.score = score;
@@ -29,10 +27,16 @@ public class Player extends JPanel{
     public int getScore() {
         return score;
     }
-    
-    
+  
     public String getCards() {
         return playerCards.toString();
+    }
+    public int getAceCount() {
+        return aceCount;
+    }
+    
+    public int getAceFlips() {
+        return aceFlips;
     }
     
     public void addCard(Card card) {
@@ -44,6 +48,14 @@ public class Player extends JPanel{
         this.score += score;
     }
     
+    public void addAceCount() {
+        aceCount += 1;
+    }
+    
+    public void flipAce() {
+        score -= 10;
+        aceFlips += 1;
+    }
     public void returnCards(Deck deck) {
         while (playerCards.isEmpty() == false){
             deck.addCard(playerCards.remove());
@@ -53,23 +65,22 @@ public class Player extends JPanel{
         revalidate();
     }
     
-    public void bust() {
-        JLabel bustLabel = new JLabel("BUST!");
-        add(bustLabel);
+    public void status(String status) {
+        // adds the status of the player to the panel
+        JLabel statusLabel = new JLabel(status + "!");
+        statusLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        add(statusLabel);
+        repaint();
+        revalidate();
     }
     
-    public void blackjack() {
-        JLabel blackjackLabel = new JLabel("BLACKJACK!");
-        add(blackjackLabel);
-    }
-    
-    public void loseScreen() {
+    public void winLoseScreen(String status) {
+        // changes the panel to a win/lose screen
         removeAll();
-        JLabel loseLabel = new JLabel("YOU LOSE!", SwingConstants.CENTER);
+        JLabel loseLabel = new JLabel("YOU " + status + "!", SwingConstants.CENTER);
         loseLabel.setFont(new Font("Arial", Font.BOLD, 50));
         add(loseLabel);
         repaint();
         revalidate();
     }
-    
 }
