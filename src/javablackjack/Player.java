@@ -4,9 +4,11 @@
  */
 package javablackjack;
 
+import java.awt.Font;
 import java.util.LinkedList;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -46,6 +48,9 @@ public class Player extends JPanel{
         while (playerCards.isEmpty() == false){
             deck.addCard(playerCards.remove());
         }
+        removeAll();
+        repaint();
+        revalidate();
     }
     
     public void bust() {
@@ -60,8 +65,11 @@ public class Player extends JPanel{
     
     public void loseScreen() {
         removeAll();
-        JLabel loseLabel = new JLabel("YOU LOSE!");
+        JLabel loseLabel = new JLabel("YOU LOSE!", SwingConstants.CENTER);
+        loseLabel.setFont(new Font("Arial", Font.BOLD, 50));
         add(loseLabel);
+        repaint();
+        revalidate();
     }
     
 }
