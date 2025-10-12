@@ -83,7 +83,8 @@ public class BlackjackFrame extends JFrame {
     private class StandHandler implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent event){
-            System.out.println(dealer.getCards());
+            clearButtonPanel();
+            actions.dealersTurn();
         }
     }
     
