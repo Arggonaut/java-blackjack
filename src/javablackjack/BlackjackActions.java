@@ -53,13 +53,21 @@ public class BlackjackActions {
     public void hit(Player player){
         //draw a card and add its value to the score. If the score is greater than or equal to BLACKJACK, the panel changes accordingly.
         Card drawnCard = deck.drawCard();
+        if (drawnCard.getRank() == Rank.ACE) {
+            player.addAceCount();
+        }
         player.addCard(drawnCard);
         player.addScore(drawnCard.getValue());
         user.revalidate();
         user.repaint(); 
         
         if (player.getScore() > BLACKJACK) { //If the user busts
-            player.status("BUST");
+            if (player.getAceCount() < player.getAceFlips()) {
+                player.flipAce();
+            }
+            else {
+                player.status("BUST");
+            }
         }
         else if (player.getScore() == BLACKJACK) { //If the user gets a blackjack
             player.status("BLACKJACK");
