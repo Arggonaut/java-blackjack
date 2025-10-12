@@ -4,6 +4,10 @@
  */
 package javablackjack;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
+
 
 /**
  *
@@ -24,7 +28,7 @@ public class BlackjackActions {
     }
     
     public void drawFirstCards(){
-        //draw the initial two cards for the player and the dealer
+        //draw the initial two cards for the player and the dealer     
         hit(dealer);
         pause(DRAW_DELAY);
         hit(dealer);
@@ -50,12 +54,11 @@ public class BlackjackActions {
         player.addCard(drawnCard);
         player.addScore(drawnCard.getValue());
         user.revalidate();
-        user.repaint();
-
+        user.repaint(); 
         
         if (player.getScore() > BLACKJACK) { //If the user busts
             player.bust();
-            dealersTurn();
+            dealer.loseScreen();
         }
         else if (player.getScore() == BLACKJACK) { //If the user gets a blackjack
             player.blackjack();
@@ -63,18 +66,25 @@ public class BlackjackActions {
         }
     }
     
-   public void dealersTurn() { //After the user stands or gets a blackjack, the dealer starts drawing cards
+    public void dealersTurn() { //After the user stands or gets a blackjack, the dealer starts drawing cards
        //draw cards until either the dealer busts or the dealer gets a score that is greater than or equal to the user
-       while (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
-           hit(dealer);
-       }
-       
+       Timer timer = new Timer(DRAW_DELAY, null);
+       timer.start();
+       timer.addActionListener(lambdaListener -> {
+            if (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
+                hit(dealer);
+            } 
+            else {
+                ((Timer) lambdaListener.getSource()).stop();
+            }
+        });
+ 
        if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
            pause(DRAW_DELAY);
            user.loseScreen();
            
        }
-   }
+    }
     
     public static void pause(int time) {
         //makes java pause for a certain amount of time in ms
