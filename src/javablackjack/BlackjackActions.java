@@ -21,6 +21,7 @@ public class BlackjackActions {
     private BlackjackFrame frame;
     private final int DRAW_DELAY = 300;
     private final int BLACKJACK = 21;
+    private final int NUMBER_OF_STARTING_CARDS = 4;
     
     public BlackjackActions(Player dealer, Player user, Deck deck){
         this.dealer = dealer;
@@ -32,13 +33,9 @@ public class BlackjackActions {
     }
     public void drawFirstCards(){
         //draw the initial two cards for the player and the dealer     
-        hit(dealer);
-        pause(DRAW_DELAY);
-        hit(dealer);
-        pause(DRAW_DELAY);
-        userHit();
-        pause(DRAW_DELAY);
-        userHit();
+        int count = 0;
+        Timer timer = new Timer(DRAW_DELAY, new drawFirstListener());
+        timer.start();
     }
 
     public void resetGame(){
@@ -108,6 +105,19 @@ public class BlackjackActions {
             
         }
     
-    }   
+    }
+    
+    private class drawFirstListener implements ActionListener {
+        int count = 0;
+        @Override
+        public void actionPerformed(ActionEvent event){
+            if (count < NUMBER_OF_STARTING_CARDS) {
+                if (count % 2 == 0){ userHit(); }
+                else{ hit(dealer); }
+                count++;
+            } 
+        }
+    }
 }
+    
 
