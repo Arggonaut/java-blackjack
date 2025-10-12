@@ -18,6 +18,7 @@ public class BlackjackActions {
     private Player dealer;
     private Player user;
     private Deck deck;
+    private BlackjackFrame frame;
     private final int DRAW_DELAY = 300;
     private final int BLACKJACK = 21;
     
@@ -26,16 +27,18 @@ public class BlackjackActions {
         this.user = user;
         this.deck = deck;
     }
-    
+    public void addFrame(BlackjackFrame frame) {
+        this.frame = frame;
+    }
     public void drawFirstCards(){
         //draw the initial two cards for the player and the dealer     
         hit(dealer);
         pause(DRAW_DELAY);
         hit(dealer);
         pause(DRAW_DELAY);
-        hit(user);
+        userHit();
         pause(DRAW_DELAY);
-        hit(user);
+        userHit();
     }
 
     public void resetGame(){
@@ -49,7 +52,7 @@ public class BlackjackActions {
     }
     
     public void hit(Player player){
-        //draw a card and add its value to the score. If the score is over 21, the player state is bust. If the score is 21, the player state is blackjack.
+        //draw a card and add its value to the score. If the score is greater than or equal to BLACKJACK, the panel changes accordingly.
         Card drawnCard = deck.drawCard();
         player.addCard(drawnCard);
         player.addScore(drawnCard.getValue());
@@ -58,10 +61,21 @@ public class BlackjackActions {
         
         if (player.getScore() > BLACKJACK) { //If the user busts
             player.bust();
-            dealer.loseScreen();
         }
         else if (player.getScore() == BLACKJACK) { //If the user gets a blackjack
             player.blackjack();
+        }
+    }
+    
+    public void userHit(){
+        //the hit method with code specific to if it is the user hitting
+        hit(user);
+        if (user.getScore() > BLACKJACK) { //If the user busts
+            dealer.loseScreen();
+            frame.newGameButtonPanel();
+        }
+        else if (user.getScore() == BLACKJACK) { //If the user gets a blackjack
+            frame.clearButtonPanel();
             dealersTurn();
         }
     }
@@ -82,7 +96,6 @@ public class BlackjackActions {
        if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
            pause(DRAW_DELAY);
            user.loseScreen();
-           
        }
     }
     
