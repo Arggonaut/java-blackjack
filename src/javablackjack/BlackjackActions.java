@@ -59,10 +59,10 @@ public class BlackjackActions {
         user.repaint(); 
         
         if (player.getScore() > BLACKJACK) { //If the user busts
-            player.bust();
+            player.status("BUST");
         }
         else if (player.getScore() == BLACKJACK) { //If the user gets a blackjack
-            player.blackjack();
+            player.status("BLACKJACK");
         }
     }
     
@@ -70,7 +70,7 @@ public class BlackjackActions {
         //the hit method with code specific to if it is the user hitting
         hit(user);
         if (user.getScore() > BLACKJACK) { //If the user busts
-            dealer.statusScreen("LOSE");
+            dealer.winLoseScreen("LOSE");
             frame.newGameButtonPanel();
         }
         else if (user.getScore() == BLACKJACK) { //If the user gets a blackjack
@@ -83,21 +83,27 @@ public class BlackjackActions {
         // draw cards until either the dealer busts or the dealer gets a score that is greater than or equal to the user
         Timer timer = new Timer(DRAW_DELAY, null);
         timer.start();
-        timer.addActionListener(lambdaListener -> {
-            if (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
-                hit(dealer);
-            } 
-            // if the dealer wins
-            else if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
-                user.statusScreen("LOSE");
-                frame.newGameButtonPanel();
-                ((Timer) lambdaListener.getSource()).stop();
-            }
-            // if the user wins
-            else { 
-                user.statusScreen("WIN");
-                frame.newGameButtonPanel();
-                ((Timer) lambdaListener.getSource()).stop();
+        timer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event){
+                if (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
+                    hit(dealer);
+                } 
+                // if the dealer wins
+                else if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
+                    timer.stop();
+                    user.winLoseScreen("LOSE");
+                    frame.newGameButtonPanel();
+                    
+                }
+                // if the user wins
+                else if (dealer.getScore() > BLACKJACK) { 
+                    timer.stop();
+                    dealer.status("BUST");
+                    user.winLoseScreen("WIN");
+                    frame.newGameButtonPanel();
+                    
+                }
             }
         });
     }
