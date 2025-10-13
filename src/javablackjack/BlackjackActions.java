@@ -22,6 +22,8 @@ public class BlackjackActions {
     private final int DRAW_DELAY = 300;
     private final int BLACKJACK = 21;
     private final int NUMBER_OF_STARTING_CARDS = 4;
+    private Timer timer = new Timer(DRAW_DELAY, null);
+    private int count;
     
     public BlackjackActions(Player dealer, Player user, Deck deck){
         // initializes variables
@@ -34,15 +36,17 @@ public class BlackjackActions {
         this.frame = frame;
     }
     public void drawFirstCards(){
-        //draw the initial two cards for the player and the dealer     
-        int count = 0;
-        Timer timer = new Timer(DRAW_DELAY, new drawFirstListener());
+        //draw the initial two cards for the player and the dealer
+        count = 0;
+        timer.addActionListener(new DrawFirstListener());
         timer.start();
     }
 
     public void resetGame(){
         //empty both player and dealer cards back into the deck, shuffles the deck, and resets scores and player states
         deck.shuffleDeck();
+        user.resetPlayer(deck);
+        dealer.resetPlayer(deck);
         
         
     }
@@ -81,30 +85,8 @@ public class BlackjackActions {
         
 
         // draw cards until either the dealer busts or the dealer gets a score that is greater than or equal to the user
-        Timer timer = new Timer(DRAW_DELAY, null);
+        timer.addActionListener(new DealersTurnListener());
         timer.start();
-        timer.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event){
-                if (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
-                    hit(dealer);
-                } 
-                // if the dealer wins
-                else if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
-                    timer.stop();
-                    user.winLoseScreen("LOSE");
-                    frame.newGameButtonPanel();
-                    
-                }
-                // if the user wins
-                else if (dealer.getScore() > BLACKJACK) { 
-                    timer.stop();
-                    user.winLoseScreen("WIN");
-                    frame.newGameButtonPanel();
-                    
-                }
-            }
-        });
     }
     
     public void updateScore(Player player, Card card) {
@@ -114,7 +96,7 @@ public class BlackjackActions {
         player.addScore(card.getValue());
 
         if (player.getScore() > BLACKJACK) { //If the user busts
-            if (player.getAceCount() < player.getAceFlips()) {
+            if (player.getAceCount() > player.getAceFlips()) {
                 player.flipAce();
             }
             else {
@@ -126,10 +108,18 @@ public class BlackjackActions {
         }
     }
     
+    public void resetTimer(ActionListener listener) {
+        timer.stop();
+        timer.removeActionListener(listener);
+    }
     
-    private class drawFirstListener implements ActionListener {
+    public void endGame(String endState) {
+        user.winLoseScreen(endState);
+        frame.newGameButtonPanel();
+    }
+    
+    private class DrawFirstListener implements ActionListener {
         // alternates between giving a card to the user and then the dealer until 4 cards are dealt
-        int count = 0;
         @Override
         public void actionPerformed(ActionEvent event){
             if (count < NUMBER_OF_STARTING_CARDS) {
@@ -138,6 +128,37 @@ public class BlackjackActions {
                 else {flipHit(dealer);}
                 count++;
             } 
+            else {
+                frame.enableHitStandButtons();
+                resetTimer(this);
+            }
+        }
+    }
+    
+    private class DealersTurnListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent event){
+            if (dealer.getScore() < BLACKJACK && dealer.getScore() < user.getScore()) {
+                    hit(dealer);
+            } 
+            
+            //if the dealer wins
+            else if (dealer.getScore() > user.getScore() && dealer.getScore() <= BLACKJACK) {
+                endGame("LOSE");
+                resetTimer(this); 
+            }
+            
+            //if the user wins
+            else if (dealer.getScore() > BLACKJACK) { 
+                endGame("WIN");
+                resetTimer(this);
+            }
+            
+            //if both players get the same score
+            else if (dealer.getScore() == user.getScore()) {
+                endGame("TIE");
+                resetTimer(this);
+            }
         }
     }
 }
