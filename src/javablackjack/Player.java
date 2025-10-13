@@ -6,6 +6,8 @@ package javablackjack;
 
 import java.awt.Font;
 import java.util.LinkedList;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -19,6 +21,7 @@ public class Player extends JPanel{
     private int score;
     private int aceCount = 0;
     private int aceFlips = 0;
+    private JLabel flippedCardLabel;
     
     public void setScore(int score) {
         this.score = score;
@@ -39,9 +42,23 @@ public class Player extends JPanel{
         return aceFlips;
     }
     
+    public JLabel getFlippedCardLabel() {
+        return flippedCardLabel;
+    }
+    
     public void addCard(Card card) {
         playerCards.add(card);
         add(new JLabel(card.getIcon()));
+    }
+    
+    public void addCard(Card card, String flipped) {
+        playerCards.addFirst(card);
+        Icon flippedCard = new ImageIcon(getClass().getResource("./PlayingCards/FlippedCard.png"));;
+        flippedCardLabel = new JLabel(flippedCard);
+        add(flippedCardLabel);
+        repaint();
+        revalidate();
+        System.out.println("kilroy was here");
     }
     
     public void addScore(int score) {
@@ -55,6 +72,16 @@ public class Player extends JPanel{
     public void flipAce() {
         score -= 10;
         aceFlips += 1;
+    }
+    
+    public Card flipCard() {
+        // change the icon of the flipped card to the face of what the card and return the Card object
+        Card flippedCard = playerCards.getFirst();
+        add(new JLabel(flippedCard.getIcon()));
+        repaint();
+        revalidate();
+        
+        return flippedCard;
     }
     public void returnCards(Deck deck) {
         while (playerCards.isEmpty() == false){
