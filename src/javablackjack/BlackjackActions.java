@@ -42,11 +42,8 @@ public class BlackjackActions {
 
     public void resetGame(){
         //empty both player and dealer cards back into the deck, shuffles the deck, and resets scores and player states
-        user.returnCards(deck);
-        dealer.returnCards(deck);
         deck.shuffleDeck();
-        user.setScore(0);
-        dealer.setScore(0);
+        
         
     }
     
@@ -54,8 +51,7 @@ public class BlackjackActions {
         //draw a card and add its value to the score. If the score is greater than or equal to BLACKJACK, the panel changes accordingly.
         Card drawnCard = deck.drawCard();
         player.addCard(drawnCard);
-        user.revalidate();
-        user.repaint(); 
+        user.refresh(); 
         updateScore(player, drawnCard);
     }
     
