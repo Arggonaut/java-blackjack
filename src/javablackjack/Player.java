@@ -23,10 +23,6 @@ public class Player extends JPanel{
     private int aceFlips = 0;
     private JLabel flippedCardLabel;
     
-    public void setScore(int score) {
-        this.score = score;
-    }
-    
     public int getScore() {
         return score;
     }
@@ -47,18 +43,19 @@ public class Player extends JPanel{
     }
     
     public void addCard(Card card) {
+        //adds the Card object to playerCards and adds a JLabel with the card's icon to the JPanel
         playerCards.add(card);
         add(new JLabel(card.getIcon()));
+        refresh();
     }
     
     public void addCard(Card card, String flipped) {
+        //adds the Card object to playerCards and adds a JLabel with a flipped card icon to the JPanel
         playerCards.addFirst(card);
         Icon flippedCard = new ImageIcon(getClass().getResource("./PlayingCards/FlippedCard.png"));;
         flippedCardLabel = new JLabel(flippedCard);
         add(flippedCardLabel);
-        repaint();
-        revalidate();
-        System.out.println("kilroy was here");
+        refresh();
     }
     
     public void addScore(int score) {
@@ -69,7 +66,16 @@ public class Player extends JPanel{
         aceCount += 1;
     }
     
+    public void resetPlayer(Deck deck) {
+        //returns cards from playerCards to the deck, and sets score, aceCount, and aceFlips to 0
+        returnCards(deck);
+        score = 0;
+        aceCount = 0;
+        aceFlips = 0;
+    }
+    
     public void flipAce() {
+        //makes an ace have a value of 1
         score -= 10;
         aceFlips += 1;
     }
@@ -78,18 +84,17 @@ public class Player extends JPanel{
         // change the icon of the flipped card to the face of what the card and return the Card object
         Card flippedCard = playerCards.getFirst();
         add(new JLabel(flippedCard.getIcon()));
-        repaint();
-        revalidate();
+        refresh();
         
         return flippedCard;
     }
     public void returnCards(Deck deck) {
+        //sends all Card objects from playerCards to the deck and clears the JPanel
         while (playerCards.isEmpty() == false){
             deck.addCard(playerCards.remove());
         }
         removeAll();
-        repaint();
-        revalidate();
+        refresh();
     }
     
     public void status(String status) {
@@ -97,8 +102,7 @@ public class Player extends JPanel{
         JLabel statusLabel = new JLabel(status + "!");
         statusLabel.setFont(new Font("Arial", Font.BOLD, 30));
         add(statusLabel);
-        repaint();
-        revalidate();
+        refresh();
     }
     
     public void winLoseScreen(String status) {
@@ -107,6 +111,11 @@ public class Player extends JPanel{
         JLabel loseLabel = new JLabel("YOU " + status + "!", SwingConstants.CENTER);
         loseLabel.setFont(new Font("Arial", Font.BOLD, 50));
         add(loseLabel);
+        refresh();
+    }
+    
+    public void refresh() {
+        //updates the JPanel to show the correct items
         repaint();
         revalidate();
     }
