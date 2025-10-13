@@ -53,25 +53,15 @@ public class BlackjackActions {
     public void hit(Player player){
         //draw a card and add its value to the score. If the score is greater than or equal to BLACKJACK, the panel changes accordingly.
         Card drawnCard = deck.drawCard();
-        if (drawnCard.getRank() == Rank.ACE) {
-            player.addAceCount();
-        }
         player.addCard(drawnCard);
-        player.addScore(drawnCard.getValue());
         user.revalidate();
         user.repaint(); 
-        
-        if (player.getScore() > BLACKJACK) { //If the user busts
-            if (player.getAceCount() < player.getAceFlips()) {
-                player.flipAce();
-            }
-            else {
-                player.status("BUST");
-            }
-        }
-        else if (player.getScore() == BLACKJACK) { //If the user gets a blackjack
-            player.status("BLACKJACK");
-        }
+        updateScore(player, drawnCard);
+    }
+    
+    public void flipHit(Player player) {
+        //the player draws a card face down - the score isn't added until it gets flipped back over
+        player.addCard(deck.drawCard(), "flipped");
     }
     
     public void userHit(){
@@ -88,6 +78,12 @@ public class BlackjackActions {
     }
     
     public void dealersTurn() { // After the user stands or gets a blackjack, the dealer starts drawing cards
+        //add the value of the flipped card
+        dealer.remove(dealer.getFlippedCardLabel());
+        Card flippedCard = dealer.flipCard();
+        updateScore(dealer, flippedCard);
+        
+
         // draw cards until either the dealer busts or the dealer gets a score that is greater than or equal to the user
         Timer timer = new Timer(DRAW_DELAY, null);
         timer.start();
@@ -107,13 +103,31 @@ public class BlackjackActions {
                 // if the user wins
                 else if (dealer.getScore() > BLACKJACK) { 
                     timer.stop();
-                    dealer.status("BUST");
                     user.winLoseScreen("WIN");
                     frame.newGameButtonPanel();
                     
                 }
             }
         });
+    }
+    
+    public void updateScore(Player player, Card card) {
+        if (card.getRank() == Rank.ACE) {
+            player.addAceCount();
+        }
+        player.addScore(card.getValue());
+
+        if (player.getScore() > BLACKJACK) { //If the user busts
+            if (player.getAceCount() < player.getAceFlips()) {
+                player.flipAce();
+            }
+            else {
+                player.status("BUST");
+            }
+        }
+        else if (player.getScore() == BLACKJACK) { //If the user gets a blackjack
+            player.status("BLACKJACK");
+        }
     }
     
     
@@ -124,7 +138,8 @@ public class BlackjackActions {
         public void actionPerformed(ActionEvent event){
             if (count < NUMBER_OF_STARTING_CARDS) {
                 if (count % 2 == 0){ userHit(); }
-                else{ hit(dealer); }
+                else if (count == 1) {hit(dealer); }
+                else {flipHit(dealer);}
                 count++;
             } 
         }
