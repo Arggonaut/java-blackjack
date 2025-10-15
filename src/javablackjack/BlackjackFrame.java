@@ -4,12 +4,15 @@
  */
 package javablackjack;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -17,6 +20,8 @@ import javax.swing.JPanel;
  */
 public class BlackjackFrame extends JFrame {
     //This class handles most of the java swing for the app
+    private JPanel topPanel;
+    private JLabel winLoseLabel;
     private JPanel buttonPanel;
     private JButton hitButton;
     private JButton standButton;
@@ -30,9 +35,16 @@ public class BlackjackFrame extends JFrame {
         this.actions = actions;
         this.user = user;
         this.dealer = dealer;
-        setLayout(new GridLayout(3,1)); 
+        setLayout(new GridLayout(4,1)); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(720,480);
+        setSize(720,720);
+        
+        //top slot - displays status when game ends
+        topPanel = new JPanel();
+        winLoseLabel = new JLabel();
+        winLoseLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        topPanel.add(winLoseLabel);
+        add(topPanel);
         
         add(dealer);
         add(user);
@@ -48,14 +60,23 @@ public class BlackjackFrame extends JFrame {
         buttonPanel.removeAll();
     }
     
+    public void clearWinLoseLabel() {
+        winLoseLabel.setText("");
+        winLoseLabel.repaint();
+        winLoseLabel.revalidate();
+    }
+    
+    public void setWinLoseLabel(String text) {
+        winLoseLabel.setText("YOU " + text + "!");
+        winLoseLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        winLoseLabel.repaint();
+        winLoseLabel.revalidate();
+    }
+    
     public void hitStandButtonPanel() {
         clearButtonPanel();
         hitButton = new JButton("HIT");
-        HitHandler hitHandler = new HitHandler();
-        hitButton.addActionListener(hitHandler);
         standButton = new JButton("STAND");
-        StandHandler standHandler = new StandHandler();
-        standButton.addActionListener(standHandler);
         buttonPanel.add(hitButton);
         buttonPanel.add(standButton);
         buttonPanel.repaint();
@@ -70,6 +91,13 @@ public class BlackjackFrame extends JFrame {
         buttonPanel.add(newGameButton);
         buttonPanel.repaint();
         buttonPanel.revalidate();
+    }
+    
+    public void enableHitStandButtons() {
+        HitHandler hitHandler = new HitHandler();
+        hitButton.addActionListener(hitHandler);
+        StandHandler standHandler = new StandHandler();
+        standButton.addActionListener(standHandler);
     }
     
     private class HitHandler implements ActionListener{
