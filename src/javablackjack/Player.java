@@ -104,16 +104,7 @@ public class Player extends JPanel{
         add(statusLabel);
         refresh();
     }
-    
-    public void winLoseScreen(String status) {
-        // changes the panel to a win/lose screen
-        removeAll();
-        JLabel loseLabel = new JLabel("YOU " + status + "!", SwingConstants.CENTER);
-        loseLabel.setFont(new Font("Arial", Font.BOLD, 50));
-        add(loseLabel);
-        refresh();
-    }
-    
+
     public void refresh() {
         //updates the JPanel to show the correct items
         repaint();
