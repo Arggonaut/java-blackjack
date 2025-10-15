@@ -47,6 +47,7 @@ public class BlackjackActions {
         deck.shuffleDeck();
         user.resetPlayer(deck);
         dealer.resetPlayer(deck);
+        frame.clearWinLoseLabel();
         
         
     }
@@ -68,7 +69,7 @@ public class BlackjackActions {
         //the hit method with code specific to if it is the user hitting
         hit(user);
         if (user.getScore() > BLACKJACK) { //If the user busts
-            dealer.winLoseScreen("LOSE");
+            endGame("LOSE!");
             frame.newGameButtonPanel();
         }
         else if (user.getScore() == BLACKJACK) { //If the user gets a blackjack
@@ -114,7 +115,7 @@ public class BlackjackActions {
     }
     
     public void endGame(String endState) {
-        user.winLoseScreen(endState);
+        frame.setWinLoseLabel(endState);
         frame.newGameButtonPanel();
     }
     
