@@ -152,12 +152,16 @@ public class BlackjackActions {
             //if the user wins
             else if (dealer.getScore() > BLACKJACK) { 
                 endGame("WIN");
+                PointsManager.addPoints(PointsManager.getBet() * 2);
+                frame.refreshPointsandBets();
                 resetTimer(this);
             }
             
             //if both players get the same score
             else if (dealer.getScore() == user.getScore()) {
                 endGame("TIE");
+                PointsManager.addPoints(PointsManager.getBet());
+                frame.refreshPointsandBets();
                 resetTimer(this);
             }
         }

@@ -4,6 +4,8 @@
  */
 package javablackjack;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -12,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 /**
@@ -21,11 +25,15 @@ import javax.swing.SwingConstants;
 public class BlackjackFrame extends JFrame {
     //This class handles most of the java swing for the app
     private JPanel topPanel;
+    private JLabel pointsAndBetLabel;
     private JLabel winLoseLabel;
     private JPanel buttonPanel;
     private JButton hitButton;
     private JButton standButton;
     private JButton newGameButton;
+    private JLabel betLabel;
+    private JSpinner betSpinner;
+    private JButton resetPointsButton;
     private BlackjackActions actions;
     private Player user;
     private Player dealer;
@@ -41,9 +49,12 @@ public class BlackjackFrame extends JFrame {
         
         //top slot - displays status when game ends
         topPanel = new JPanel();
+        topPanel.setLayout(new BorderLayout());
+        pointsAndBetLabel = new JLabel(String.format("Points: %d | Bet: %d", PointsManager.getPoints(), PointsManager.getBet()));
+        topPanel.add(pointsAndBetLabel, BorderLayout.WEST);
         winLoseLabel = new JLabel();
         winLoseLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        topPanel.add(winLoseLabel);
+        topPanel.add(winLoseLabel, BorderLayout.CENTER);
         add(topPanel);
         
         add(dealer);
@@ -51,7 +62,7 @@ public class BlackjackFrame extends JFrame {
         
         //bottom slot - the buttons for hit and stand
         buttonPanel = new JPanel();
-        hitStandButtonPanel();
+        newGameButtonPanel();
         add(buttonPanel);
         
     }
@@ -85,6 +96,16 @@ public class BlackjackFrame extends JFrame {
     
     public void newGameButtonPanel() {
         clearButtonPanel();
+        resetPointsButton = new JButton("Reset Points");
+        resetPointsButton.addActionListener(new ResetPointsButtonHandler());
+        buttonPanel.add(resetPointsButton);
+        
+        betLabel = new JLabel("Bet:");
+        betSpinner = new JSpinner(new SpinnerNumberModel(0, 0, PointsManager.getPoints(), 5));
+        betSpinner.setPreferredSize(new Dimension(100,20));
+        buttonPanel.add(betLabel);
+        buttonPanel.add(betSpinner);
+        
         newGameButton = new JButton("New Game");
         NewGameHandler newGameHandler = new NewGameHandler();
         newGameButton.addActionListener(newGameHandler);
@@ -98,6 +119,12 @@ public class BlackjackFrame extends JFrame {
         hitButton.addActionListener(hitHandler);
         StandHandler standHandler = new StandHandler();
         standButton.addActionListener(standHandler);
+    }
+    
+    public void refreshPointsandBets() {
+        pointsAndBetLabel.setText(String.format("Points: %d | Bet: %d", PointsManager.getPoints(), PointsManager.getBet()));
+        topPanel.repaint();
+        topPanel.revalidate();
     }
     
     private class HitHandler implements ActionListener{
@@ -120,10 +147,21 @@ public class BlackjackFrame extends JFrame {
         //calls resetGame from BlackjackActions and switches the buttonPanel back to hit and stand
         @Override
         public void actionPerformed(ActionEvent event){
+            PointsManager.setBet((int) betSpinner.getValue());
+            refreshPointsandBets();
             actions.resetGame();
             hitStandButtonPanel();
             actions.drawFirstCards();
         }
     }
+    
+    private class ResetPointsButtonHandler implements ActionListener {
+        //Sets the user's points to the default value in PointsManager
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            PointsManager.resetPoints();
+            refreshPointsandBets();
+        }
+            }
     
 }
